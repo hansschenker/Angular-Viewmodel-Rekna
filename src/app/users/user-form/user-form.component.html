@@ -1,0 +1,15 @@
+<div>
+  <form [formGroup]="userForm" (ngSubmit)="userChanged()">
+    <h3>User</h3>
+    <div class="field">
+      <label for="name">Name:</label>
+      <input tabindex="0" type="text" formControlName="name" id="name" />
+    </div>
+    <div class="field">
+      <label for="email">Email:</label>
+      <input type="text" formControlName="email" id="email" />
+    </div>
+    <button type="submit">Save User</button>
+    <pre> {{ userForm.value | json }} </pre>
+  </form>
+</div>
