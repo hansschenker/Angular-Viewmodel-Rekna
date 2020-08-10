@@ -1,0 +1,18 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <h1>Users</h1>
+
+  <div>Add a User</div>
+  <input #user type="text" (change)="addState.next(user.value)" />
+  <hr />
+
+  <div *ngFor="let user of vm.items">
+    <button (click)="deleteState.next(user)">X</button>
+    <button (click)="detailState.next(user)">detail</button>
+    {{ user.name }}
+  </div>
+
+  <div style="margin-top: 1em;" *ngIf="vm.selectedItem">
+    {{ vm.selectedItem.id }} - {{ vm.selectedItem.name }}
+    <button (click)="detailCloseState.next()">close</button>
+  </div>
+</ng-container>
