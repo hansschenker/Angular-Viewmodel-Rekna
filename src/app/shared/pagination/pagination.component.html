@@ -1,0 +1,22 @@
+<div>
+  <button (click)="firstPage()" id="firstButton">first</button>
+  <button (click)="nextPage()" id="nextButton">next</button>
+  <button (click)="previousPage()" id="previousButton">previous</button>
+  <button (click)="lastPage()" id="lastButton">last</button>
+  <div>page count: {{ pageCount }}</div>
+  <div>page size: {{ pageSize }}</div>
+  <hr />
+  <div>page set count: {{ pageSetCount }}</div>
+  <div>page set: {{ pageSet }}</div>
+  <div>page set index: {{ pageSetIndex }}</div>
+  <hr />
+  <div>page index: {{ pageIndex }}</div>
+  <div>page count - size : {{ pageCount - pageSize }}</div>
+  <h3>Pages</h3>
+  pageSetItems: {{ pageSetItems }}
+  <ul>
+    <li *ngFor="let nbr of pageSetItems">
+      {{ nbr }}
+    </li>
+  </ul>
+</div>

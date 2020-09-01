@@ -1,0 +1,12 @@
+{
+  "posts": [{ "id": 1, "title": "json-server", "author": "typicode" }],
+  "comments": [{ "id": 1, "body": "some comment", "postId": 1 }],
+  "profile": { "name": "typicode" },
+  "products": [
+    { "id": 1, "name": "Product 1", "color": "green", "year": 2000 },
+    { "id": 2, "name": "Product 2", "color": "red", "year": 2001 },
+    { "id": 3, "name": "Product 3", "color": "blue", "year": 2002 },
+    { "id": 4, "name": "Product 4", "color": "black", "year": 2003 },
+    { "id": 5, "name": "Product 5", "color": "yellow", "year": 2004 }
+  ]
+}

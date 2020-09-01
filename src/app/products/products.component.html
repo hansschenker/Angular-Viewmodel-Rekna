@@ -1,0 +1,32 @@
+<div *ngIf="vm$ | async as vm">
+  <!-- search -->
+  <h3>Product Search:</h3>
+  <pre>Search Items:  {{ vm.searchItems | json }} </pre>
+  <pre> color:  {{ vm.searchItem?.color | json }} </pre>
+  <pre> name: {{ vm.searchItem?.name | json }} </pre>
+  <pre> year: {{ vm.searchItem?.year | json }} </pre>
+  <pre> id: {{ vm.searchItem?.id | json }} </pre>
+
+  <product-search
+    (OnSearchItemChanged)="handleSearchItem($event)"
+  ></product-search>
+
+  <h3>Products</h3>
+  <!-- form -->
+  <product-form (OnProductChanged)="handleAdd($event)"></product-form>
+  <!-- <pre>  {{ products | json }} </pre> -->
+
+  <!-- list -->
+  <product-list
+    (OnDetail)="handleDetail($event)"
+    (OnDelete)="handleDelete($event)"
+    [products]="vm.items"
+  ></product-list>
+
+  <!-- detail -->
+  <pre>Detail:  {{ vm.selectedItem | json }} </pre>
+  <product-detail
+    (OnDetailClose)="handleDetailClose()"
+    [product]="vm.selectedItem"
+  ></product-detail>
+</div>

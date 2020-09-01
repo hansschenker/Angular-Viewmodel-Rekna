@@ -15,13 +15,17 @@ export interface User extends Item {
   styleUrls: ["./users.component.css"],
 })
 export class UsersComponent {
+  // user viewmodel to which user subscrbes via async
   public vm$: Observable<ViewModel<User>>;
+
+  // handle user actions which change state
   public addState = new Subject<User>();
   public deleteState = new Subject<User>();
   public detailState = new Subject<User>();
   public detailCloseState = new Subject();
 
   constructor(private http: HttpClient) {
+    // merge all state changes into viewmodel
     this.vm$ = merge(
       this.usersChange$,
       this.addChange$,
@@ -64,6 +68,7 @@ export class UsersComponent {
   private closeDetailChange$ = this.detailCloseState.pipe(
     map((_) => (vm: ViewModel<User>) => ({ ...vm, selectedItem: null }))
   );
+
   userChanged(user: User) {
     console.log("userChanged:", user);
     this.addState.next(user);

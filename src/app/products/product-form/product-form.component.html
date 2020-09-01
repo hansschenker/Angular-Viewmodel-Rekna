@@ -1,0 +1,18 @@
+<div>
+  <form [formGroup]="productForm" (ngSubmit)="productChanged()">
+    <h3>Add a Product</h3>
+    <!-- name field-->
+    <div class="field">
+      <label for="name">Name:</label>
+      <input tabindex="0" type="text" formControlName="name" id="name" />
+    </div>
+    <!-- color field -->
+    <div class="field">
+      <label for="color">Color:</label>
+      <input tabindex="1" type="text" formControlName="color" id="color" />
+    </div>
+
+    <button type="submit">Save Product</button>
+    <pre> {{ productForm.value | json }} </pre>
+  </form>
+</div>

@@ -1,0 +1,14 @@
+<div>
+  <select #searchFieldSelect (change)="handleSearchField(searchFieldSelect)">
+    <option *ngFor="let field of fields" value="{{ field }}">
+      {{ field }}
+    </option>
+  </select>
+  <input
+    #searchValue
+    type="search"
+    (change)="handleSearchValue(searchValue)"
+    placeholder="search by name"
+  />
+  <button (click)="handleSearchItem()">Search</button>
+</div>

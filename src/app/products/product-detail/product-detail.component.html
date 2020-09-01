@@ -1,0 +1,6 @@
+<div style="margin-top: 1em" *ngIf="product">
+  <pre> {{ product | json }} </pre>
+  <h3>Product Details</h3>
+  {{ product.name }} - {{ product.color }}
+  <button (click)="detailClose(product)">close</button>
+</div>
