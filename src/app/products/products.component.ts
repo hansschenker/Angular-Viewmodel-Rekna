@@ -13,16 +13,6 @@ import { scan, tap, map, combineAll } from "rxjs/operators";
 import { ViewModel, Item } from "../shared/viewmodel";
 import { PaginationComponent } from "../shared/pagination/pagination.component";
 
-// const convertArrayToObject = (array, key) => {
-//   const initialValue = {};
-//   return array.reduce((obj, item) => {
-//     return {
-//       ...obj,
-//       [item[key]]: item,
-//     };
-//   }, initialValue);
-// };
-
 export interface Product extends Item {
   year: number;
   color: string;
@@ -44,21 +34,14 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   public deleteState = new Subject<Product>();
   public detailState = new Subject<Product>();
   public detailCloseState = new Subject();
-  // public filterValueState = new Subject<string>();
-  // public filterFieldState = new Subject<string>();
   public searchItemState = new Subject<Product>();
-  // public searchItemsState = new Subject<Product>();
+  // todo pagination
 
   ngOnInit() {}
   ngAfterViewInit() {
     console.log("searchValue:", this.searchValue);
   }
 
-  // merge FieldValue and FieldName
-  // searchFieldAndValue$ = combineLatest(
-  //   this.filterFieldState,
-  //   this.filterValueState
-  // );
   // init vm in constructor
   constructor(private http: HttpClient) {
     // merge all state changes into viewmodel
@@ -69,13 +52,13 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       this.detailChange$,
       this.closeDetailChange$,
       this.searchItemChange$
-      // this.searchItemsChange$
+      // todo: Pagination
     ).pipe(
       scan(
         (
           oldVm: ViewModel<Product>,
-          mutateVm: (vm: ViewModel<Product>) => ViewModel<Product>
-        ) => mutateVm(oldVm),
+          reduceVm: (vm: ViewModel<Product>) => ViewModel<Product>
+        ) => reduceVm(oldVm),
         { items: [] } as ViewModel<Product>
       )
     );
@@ -118,14 +101,6 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     map((_) => (vm: ViewModel<Product>) => ({ ...vm, selectedItem: null }))
   );
 
-  // private filteredFieldChange$ = this.filterFieldState.pipe(
-  //   tap((f) => console.log("field-name:", f))
-  // );
-
-  // private filteredValueChange$ = this.filterValueState.pipe(
-  //   tap((ps) => console.log("search-filter:", ps))
-  // );
-
   private searchItemChange$ = this.searchItemState.pipe(
     tap((o) => console.log("searchItem-change:", o)),
     map((item) => (vm: ViewModel<Product>) => ({
@@ -154,26 +129,8 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     }))
   );
 
-  // private searchItemsChange$ = this.searchItemState.pipe(
-  //   tap((itms) => console.log("searchItemssss-change:", itms)),
-  //   map((item) => (vm: ViewModel<Product>) => ({
-  //     ...vm,
-  //     searchItems: vm.items.filter((itm) => {
-  //       console.log("items:", vm.items);
-  //       console.log("searchItem:", vm.searchItem);
-  //       itm.name === vm.searchItem.name;
-  //     }),
-  //   })),
-  //   tap((vm) => console.log("searchItems-vm:", vm))
-  // );
+  // todo: Pagination
 
-  // private searchItemStateChange$ = this.searchItemState.pipe(
-  //   tap((p) => console.log("searchItemChange:", p)),
-  //   map((searchItem: Product) => (vm: ViewModel<Product>) => ({
-  //     ...vm,
-  //     searchItem: searchItem,
-  //   }))
-  // );
   // handle events
   handleAdd(product: Product) {
     console.log("Product changed:", product);
