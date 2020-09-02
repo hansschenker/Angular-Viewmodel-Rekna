@@ -7,17 +7,17 @@ import { Product } from "../products.component";
   styles: [],
 })
 export class ProductListItemComponent implements OnInit {
-  @Input() product: Product;
+  @Input() item: Product;
   @Output() OnDelete = new EventEmitter<Product>();
   @Output() OnDetail = new EventEmitter<Product>();
   constructor() {}
 
   ngOnInit(): void {}
 
-  delete(product: Product) {
-    this.OnDelete.emit(product);
+  delete(item: Product) {
+    this.OnDelete.emit(item);
   }
-  detail(product: Product) {
-    this.OnDetail.emit(product);
+  detail(item: Product) {
+    this.OnDetail.emit(item);
   }
 } // class

@@ -7,18 +7,18 @@ import { Product } from "../products.component";
   styleUrls: ["./product-list.component.css"],
 })
 export class ProductListComponent implements OnInit {
-  @Input() products: Product[];
+  @Input() items: Product[];
   @Output() OnDelete = new EventEmitter<Product>();
   @Output() OnDetail = new EventEmitter<Product>();
   constructor() {}
 
   ngOnInit(): void {}
 
-  delete(product: Product) {
-    this.OnDelete.emit(product);
+  delete(item: Product) {
+    this.OnDelete.emit(item);
   }
-  detail(product: Product) {
-    console.log("product list-detail:", product);
-    this.OnDetail.emit(product);
+  detail(item: Product) {
+    console.log("item list-detail:", item);
+    this.OnDetail.emit(item);
   }
 } // class
