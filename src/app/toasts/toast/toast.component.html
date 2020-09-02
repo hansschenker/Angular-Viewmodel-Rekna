@@ -1,7 +1,0 @@
-<!-- toast.component.html -->
-<h3>Toast</h3>
-<!-- <button *ngFor="let toast of state$ | async" (click)="remove(toast)">
-  <span [innerHtml]="toast.message"></span>
-</button> -->
-<pre> {{ state$ | async | json }}  </pre>
-<button (click)="dispatchMessage()">Dispatch</button>
