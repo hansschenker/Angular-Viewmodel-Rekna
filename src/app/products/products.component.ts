@@ -75,25 +75,22 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   private addChange$ = this.addState.pipe(
     tap((u) => console.log("add item:", u)),
-    map((product) => (vm: ViewModel<Product>) => ({
+    map((item: Product) => (vm: ViewModel<Product>) => ({
       ...vm,
-      items: [
-        ...vm.items,
-        { id: product.id, name: product.name, color: product.color },
-      ],
+      items: [...vm.items, { id: item.id, name: item.name, color: item.color }],
     }))
   );
   private deleteChange$ = this.deleteState.pipe(
-    map((item) => (vm: ViewModel<Product>) => ({
+    map((item: Product) => (vm: ViewModel<Product>) => ({
       ...vm,
       items: vm.items.filter((p) => p !== item),
     }))
   );
 
   private detailChange$ = this.detailState.pipe(
-    map((product) => (vm: ViewModel<Product>) => ({
+    map((item: Product) => (vm: ViewModel<Product>) => ({
       ...vm,
-      selectedItem: product,
+      selectedItem: item,
     }))
   );
 
@@ -103,7 +100,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   private searchItemChange$ = this.searchItemState.pipe(
     tap((o) => console.log("searchItem-change:", o)),
-    map((item) => (vm: ViewModel<Product>) => ({
+    map((item: Product) => (vm: ViewModel<Product>) => ({
       ...vm,
       searchItem: item,
       searchItems: vm.items.filter((itm) => {
@@ -132,32 +129,23 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   // todo: Pagination
 
   // handle events
-  handleAdd(product: Product) {
-    console.log("Product changed:", product);
-    this.addState.next(product);
+  handleAdd(item: Product) {
+    console.log("Item added:", item);
+    this.addState.next(item);
   }
-  handleDelete(product: Product) {
-    this.deleteState.next(product);
+  handleDelete(item: Product) {
+    this.deleteState.next(item);
   }
-  handleDetail(product: Product) {
-    console.log("product-component-detail:", product);
-    this.detailState.next(product);
+  handleDetail(item: Product) {
+    console.log("product-component-detail:", item);
+    this.detailState.next(item);
   }
-  handleDetailClose(product: Product) {
-    this.detailCloseState.next(product);
+  handleDetailClose(item: Product) {
+    this.detailCloseState.next(item);
   }
-  // handleSearch(value: string) {
-  //   this.filterValueState.next(value);
-  // }
-  // handleSearchField(key: string, value: string | number) {
-  //   this.filterFieldState.next(key);
-  // }
+
   handleSearchItem(searchItem: Product) {
     console.log("products-handleSearchItem:", searchItem);
     this.searchItemState.next(searchItem);
   }
-  // handleSearchItems(searchItem: Product) {
-  //   console.log("handleSearchItem:", searchItem);
-  //   this.searchItemsState.next(searchItem);
-  // }
 } // class

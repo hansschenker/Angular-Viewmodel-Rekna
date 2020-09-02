@@ -13,7 +13,7 @@
 
   <h3>Products</h3>
   <!-- form -->
-  <product-form (OnProductChanged)="handleAdd($event)"></product-form>
+  <product-form (OnItemAdded)="handleAdd($event)"></product-form>
   <!-- <pre>  {{ products | json }} </pre> -->
 
   <h3>Pagination</h3>
@@ -33,6 +33,6 @@
   <pre>Detail:  {{ vm.selectedItem | json }} </pre>
   <product-detail
     (OnDetailClose)="handleDetailClose()"
-    [product]="vm.selectedItem"
+    [item]="vm.selectedItem"
   ></product-detail>
 </div>

@@ -8,12 +8,12 @@ import { Product } from "../products.component";
 })
 export class ProductDetailComponent implements OnInit {
   @Output() OnDetailClose = new EventEmitter<Product>();
-  @Input() product: Product;
+  @Input() item: Product;
   constructor() {}
 
   ngOnInit(): void {}
 
-  detailClose(product: Product) {
-    this.OnDetailClose.emit(product);
+  detailClose(item: Product) {
+    this.OnDetailClose.emit(item);
   }
 }

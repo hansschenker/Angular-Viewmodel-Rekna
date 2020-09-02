@@ -8,8 +8,8 @@ import { Product } from "../products.component";
   styleUrls: ["./product-form.component.css"],
 })
 export class ProductFormComponent implements OnInit {
-  @Output() OnProductChanged = new EventEmitter<any>();
-  productForm: FormGroup;
+  @Output() OnItemAdded = new EventEmitter<Product>();
+  itemForm: FormGroup;
 
   constructor(private fb: FormBuilder) {}
 
@@ -18,7 +18,7 @@ export class ProductFormComponent implements OnInit {
   }
 
   buildForm() {
-    this.productForm = this.fb.group({
+    this.itemForm = this.fb.group({
       // item field
       name: ["", Validators.required],
       // product fields
@@ -26,9 +26,9 @@ export class ProductFormComponent implements OnInit {
     });
   }
 
-  productChanged() {
-    console.log("product-form-userChanged:", this.productForm.value);
-    this.OnProductChanged.emit(this.productForm.value);
-    this.productForm.reset();
+  itemAdded() {
+    console.log("item-form-userChanged:", this.itemForm.value);
+    this.OnItemAdded.emit(this.itemForm.value);
+    this.itemForm.reset();
   }
 }

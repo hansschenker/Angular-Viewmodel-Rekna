@@ -1,5 +1,5 @@
 <div>
-  <form [formGroup]="productForm" (ngSubmit)="productChanged()">
+  <form [formGroup]="itemForm" (ngSubmit)="itemAdded()">
     <h3>Add a Product</h3>
     <!-- name field-->
     <div class="field">
@@ -13,6 +13,6 @@
     </div>
 
     <button type="submit">Save Product</button>
-    <pre> {{ productForm.value | json }} </pre>
+    <pre> {{ itemForm.value | json }} </pre>
   </form>
 </div>
