@@ -2,10 +2,10 @@
   <!-- search -->
   <h3>Product Search:</h3>
   <pre>Search Items:  {{ vm.searchItems | json }} </pre>
-  <pre> color:  {{ vm.searchItem?.color | json }} </pre>
+  <!-- <pre> color:  {{ vm.searchItem?.color | json }} </pre>
   <pre> name: {{ vm.searchItem?.name | json }} </pre>
   <pre> year: {{ vm.searchItem?.year | json }} </pre>
-  <pre> id: {{ vm.searchItem?.id | json }} </pre>
+  <pre> id: {{ vm.searchItem?.id | json }} </pre> -->
 
   <product-search
     (OnSearchItemChanged)="handleSearchItem($event)"

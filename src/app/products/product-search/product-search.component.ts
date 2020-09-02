@@ -15,7 +15,7 @@ import { Product } from "../products.component";
 export class ProductSearchComponent implements OnInit, AfterViewInit {
   @Output() OnSearchItemChanged = new EventEmitter<Partial<Product>>();
   @Output() OnSearchItemsChanged = new EventEmitter<Partial<Product>>();
-  product: Product;
+  item: Product;
   fields: string[];
 
   private fieldName: string;
@@ -30,9 +30,9 @@ export class ProductSearchComponent implements OnInit, AfterViewInit {
 
   constructor() {
     // init a product to able to Object.keys
-    this.product = { name: "name", color: "green", year: 2002 };
+    this.item = { name: "name", color: "green", year: 2002 };
     // set Search Fields in Select
-    this.fields = Object.keys(this.product);
+    this.fields = Object.keys(this.item);
     this.fields.unshift("Select a field");
 
     console.log("search-fields:", this.fields);
@@ -70,8 +70,4 @@ export class ProductSearchComponent implements OnInit, AfterViewInit {
     this.searchItem.color = "";
     this.searchItem.year = 0;
   }
-  // handleSearchItems() {
-
-  //   this.OnSearchItemsChanged.emit(this.searchItem);
-  // }
 } // clas
