@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
+import { Item } from "../viewmodel";
 
 @Component({
   selector: "hs-pagination",
@@ -6,38 +7,54 @@ import { Component, OnInit, Input } from "@angular/core";
   styleUrls: ["./pagination.component.css"],
 })
 export class PaginationComponent implements OnInit {
-  @Input() pageCount: number = 23;
+  @Input() pageCount: number = 20;
   @Input() pageSize: number = 5;
-
-  numbers = [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-  ];
+  @Input() items: Item[];
+  // numbers = [
+  //   1,
+  //   2,
+  //   3,
+  //   4,
+  //   5,
+  //   6,
+  //   7,
+  //   8,
+  //   9,
+  //   10,
+  //   11,
+  //   12,
+  //   13,
+  //   14,
+  //   15,
+  //   16,
+  //   17,
+  //   18,
+  //   19,
+  //   20,
+  //   21,
+  //   22,
+  //   23,
+  // ];
   pageSet: number = 1;
-  pageSetCount = Math.floor(this.pageCount / this.pageSize) + 1;
+  // calculate how many Page sets according to pageSiz and pageCount
+  private _pageSetCount;
+  public get pageSetCount() {
+    let pageCount: number;
+    const pageCountRound = Math.floor(this.pageCount / this.pageSize);
+    const pageCountDiv = this.pageCount / this.pageSize;
+
+    if (pageCountDiv > pageCountRound) {
+      this._pageSetCount = pageCountRound + 1;
+    } else {
+      this._pageSetCount = pageCountRound;
+    }
+    return this._pageSetCount;
+  }
+  // public set pageSetCount(value) {
+  //   this._pageSetCount = value;
+  // }
   pageSetLast: number = this.pageSet * this.pageSize;
-  pageSetItems: number[];
+  pageSetItems: Item[];
 
   constructor() {}
 
@@ -69,10 +86,13 @@ export class PaginationComponent implements OnInit {
   }
 
   filteredPageSet() {
-    let pageSet: number[] = [];
-    this.numbers.forEach((n) => {
-      if (n > this.pageSetLast - this.pageSize && n <= this.pageSetLast) {
-        pageSet.push(n);
+    let pageSet: Item[] = [];
+    this.items.forEach((item, i) => {
+      if (
+        i + 1 > this.pageSetLast - this.pageSize &&
+        i + 1 <= this.pageSetLast
+      ) {
+        pageSet.push(item);
       }
     });
     return pageSet;

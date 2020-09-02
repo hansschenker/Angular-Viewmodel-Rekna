@@ -16,6 +16,12 @@
   <product-form (OnProductChanged)="handleAdd($event)"></product-form>
   <!-- <pre>  {{ products | json }} </pre> -->
 
+  <h3>Pagination</h3>
+  <hs-pagination
+    [items]="vm.items"
+    [pageCount]="vm.items.length"
+    [pageSize]="5"
+  ></hs-pagination>
   <!-- list -->
   <product-list
     (OnDetail)="handleDetail($event)"

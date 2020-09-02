@@ -5,20 +5,23 @@ import {
   ElementRef,
   AfterViewInit,
 } from "@angular/core";
-import { Observable, Subject, merge, combineLatest } from "rxjs";
-import { ViewModel, Item, SearchItem } from "../shared/viewmodel";
 import { HttpClient } from "@angular/common/http";
+// rxjs
+import { Observable, Subject, merge, combineLatest } from "rxjs";
 import { scan, tap, map, combineAll } from "rxjs/operators";
+// shared
+import { ViewModel, Item } from "../shared/viewmodel";
+import { PaginationComponent } from "../shared/pagination/pagination.component";
 
-const convertArrayToObject = (array, key) => {
-  const initialValue = {};
-  return array.reduce((obj, item) => {
-    return {
-      ...obj,
-      [item[key]]: item,
-    };
-  }, initialValue);
-};
+// const convertArrayToObject = (array, key) => {
+//   const initialValue = {};
+//   return array.reduce((obj, item) => {
+//     return {
+//       ...obj,
+//       [item[key]]: item,
+//     };
+//   }, initialValue);
+// };
 
 export interface Product extends Item {
   year: number;

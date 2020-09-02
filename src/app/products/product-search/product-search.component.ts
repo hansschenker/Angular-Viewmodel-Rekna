@@ -6,7 +6,6 @@ import {
   AfterViewInit,
 } from "@angular/core";
 import { Product } from "../products.component";
-import { SearchItem, propof } from "../../shared/viewmodel";
 
 @Component({
   selector: "product-search",
@@ -14,8 +13,6 @@ import { SearchItem, propof } from "../../shared/viewmodel";
   styleUrls: ["./product-search.component.css"],
 })
 export class ProductSearchComponent implements OnInit, AfterViewInit {
-  // @Output() OnSearchChanged = new EventEmitter<string>();
-  // @Output() OnSearchFieldChanged = new EventEmitter<string>();
   @Output() OnSearchItemChanged = new EventEmitter<Partial<Product>>();
   @Output() OnSearchItemsChanged = new EventEmitter<Partial<Product>>();
   product: Product;
