@@ -13,16 +13,9 @@ export interface ViewModel<T> {
   selectedItem?: T;
 }
 
+
+export type VmFn<T> = (vm: ViewModel<T>) => ViewModel<T>;
+
 export type TypeProps<T> = { [key in keyof T]: T[key] };
 export const propof = <T>(name: keyof T) => name;
-// firstName = propof<Person>("firstName");
 
-// const convertArrayToObject = (array, key) => {
-//   const initialValue = {};
-//   return array.reduce((obj, item) => {
-//     return {
-//       ...obj,
-//       [item[key]]: item,
-//     };
-//   }, initialValue);
-// };

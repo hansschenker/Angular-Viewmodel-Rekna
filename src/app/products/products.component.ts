@@ -10,8 +10,9 @@ import { HttpClient } from "@angular/common/http";
 import { Observable, Subject, merge, combineLatest } from "rxjs";
 import { scan, tap, map, combineAll } from "rxjs/operators";
 // shared
-import { ViewModel, Item } from "../shared/viewmodel";
+import { ViewModel, Item, VmFn } from '../shared/viewmodel';
 import { PaginationComponent } from "../shared/pagination/pagination.component";
+import { ProductService } from './product.service';
 
 export interface Product extends Item {
   year: number;
@@ -24,12 +25,14 @@ export interface Product extends Item {
   styleUrls: ["./products.component.css"],
 })
 export class ProductsComponent implements OnInit, AfterViewInit {
+
   // get searchField and searchValue
   @ViewChild("searchValue") searchValue: ElementRef;
-  // user viewmodel to which user subscrbes via async
+
+  // viewmodel holds state changes
   public vm$: Observable<ViewModel<Product>>;
 
-  // handle user actions which change state
+  // handle state input
   public addState = new Subject<Product>();
   public deleteState = new Subject<Product>();
   public detailState = new Subject<Product>();
@@ -42,8 +45,11 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     console.log("searchValue:", this.searchValue);
   }
 
-  // init vm in constructor
-  constructor(private http: HttpClient) {
+
+  constructor(private http: HttpClient, private svc: ProductService) {
+
+    type vmFn = VmFn<Product> 
+
     // merge all state changes into viewmodel
     this.vm$ = merge(
       this.dataChange$,
@@ -55,17 +61,15 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       // todo: Pagination
     ).pipe(
       scan(
-        (
-          oldVm: ViewModel<Product>,
-          reduceVm: (vm: ViewModel<Product>) => ViewModel<Product>
-        ) => reduceVm(oldVm),
+        ( oldVm: ViewModel<Product>, reduceVm: vmFn) => reduceVm(oldVm),
         { items: [] } as ViewModel<Product>
       )
     );
   } // constructor
 
-  // map vm state
-  private dataChange$ = this.http.get<Product[]>(`api/products`).pipe(
+  // dataChange when products loaded
+  // http.get<Product[]>(`api/products`)
+  private dataChange$ = this.svc.products$.pipe(
     // tap((ps) => console.log("products:", ps)),
     map((products: Product[]) => (vm: ViewModel<Product>) => ({
       ...vm,
@@ -73,20 +77,23 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     }))
   );
 
+  // add item
   private addChange$ = this.addState.pipe(
-    tap((u) => console.log("add item:", u)),
+    tap((u) => console.log("add item:", u)), 
+    tap(p => this.svc.addProduct(p).subscribe(d => console.log("json-server saved:", d))),
     map((item: Product) => (vm: ViewModel<Product>) => ({
       ...vm,
-      items: [...vm.items, { id: item.id, name: item.name, color: item.color }],
-    }))
+      items: [...vm.items, { ...item }],
+    })),
   );
+  // delete item
   private deleteChange$ = this.deleteState.pipe(
     map((item: Product) => (vm: ViewModel<Product>) => ({
       ...vm,
       items: vm.items.filter((p) => p !== item),
     }))
   );
-
+  // show item details
   private detailChange$ = this.detailState.pipe(
     map((item: Product) => (vm: ViewModel<Product>) => ({
       ...vm,
@@ -94,10 +101,12 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     }))
   );
 
+  // close item details
   private closeDetailChange$ = this.detailCloseState.pipe(
     map((_) => (vm: ViewModel<Product>) => ({ ...vm, selectedItem: null }))
   );
 
+  // search item by name, color, year
   private searchItemChange$ = this.searchItemState.pipe(
     tap((o) => console.log("searchItem-change:", o)),
     map((item: Product) => (vm: ViewModel<Product>) => ({
@@ -127,8 +136,9 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   );
 
   // todo: Pagination
+  // ---------------------------------------------------------------------------------
 
-  // handle events
+  // handle user events -> next state
   handleAdd(item: Product) {
     console.log("Item added:", item);
     this.addState.next(item);
