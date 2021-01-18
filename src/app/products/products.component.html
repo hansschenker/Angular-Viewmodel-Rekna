@@ -2,19 +2,15 @@
   <!-- search -->
   <h3>Product Search:</h3>
   <pre>Search Items:  {{ vm.searchItems | json }} </pre>
-  <!-- <pre> color:  {{ vm.searchItem?.color | json }} </pre>
-  <pre> name: {{ vm.searchItem?.name | json }} </pre>
-  <pre> year: {{ vm.searchItem?.year | json }} </pre>
-  <pre> id: {{ vm.searchItem?.id | json }} </pre> -->
+
 
   <product-search
-    (OnSearchItemChanged)="handleSearchItem($event)"
+    (OnItemSearch)="handleSearchItem($event)"
   ></product-search>
 
   <h3>Products</h3>
   <!-- form -->
   <product-form (OnItemAdded)="handleAdd($event)"></product-form>
-  <!-- <pre>  {{ products | json }} </pre> -->
 
   <h3>Pagination</h3>
   <hs-pagination
@@ -22,6 +18,7 @@
     [pageCount]="vm.items.length"
     [pageSize]="5"
   ></hs-pagination>
+
   <!-- list -->
   <product-list
     (OnDetail)="handleDetail($event)"
@@ -36,3 +33,4 @@
     [item]="vm.selectedItem"
   ></product-detail>
 </div>
+<router-outlet></router-outlet>

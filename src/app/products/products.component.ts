@@ -29,12 +29,12 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   // user viewmodel to which user subscrbes via async
   public vm$: Observable<ViewModel<Product>>;
 
-  // handle user actions which change state
+  // record all user actions
   public addState = new Subject<Product>();
   public deleteState = new Subject<Product>();
   public detailState = new Subject<Product>();
   public detailCloseState = new Subject();
-  public searchItemState = new Subject<Product>();
+  public searchState = new Subject<Product>();
   // todo pagination
 
   ngOnInit() {}
@@ -49,9 +49,9 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       this.dataChange$,
       this.addChange$,
       this.deleteChange$,
-      this.detailChange$,
-      this.closeDetailChange$,
-      this.searchItemChange$
+      this.selectedChange$,
+      this.selectedClose$,
+      this.searchChange$
       // todo: Pagination
     ).pipe(
       scan(
@@ -64,7 +64,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     );
   } // constructor
 
-  // map vm state
+  // load data
   private dataChange$ = this.http.get<Product[]>(`api/products`).pipe(
     // tap((ps) => console.log("products:", ps)),
     map((products: Product[]) => (vm: ViewModel<Product>) => ({
@@ -72,33 +72,35 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       items: products,
     }))
   );
-
+  // notify add
   private addChange$ = this.addState.pipe(
     tap((u) => console.log("add item:", u)),
     map((item: Product) => (vm: ViewModel<Product>) => ({
       ...vm,
-      items: [...vm.items, { id: item.id, name: item.name, color: item.color }],
+      items: [...vm.items, { ...item }],
     }))
   );
+  // notify delete
   private deleteChange$ = this.deleteState.pipe(
     map((item: Product) => (vm: ViewModel<Product>) => ({
       ...vm,
       items: vm.items.filter((p) => p !== item),
     }))
   );
-
-  private detailChange$ = this.detailState.pipe(
+  // notify show detail
+  private selectedChange$ = this.detailState.pipe(
     map((item: Product) => (vm: ViewModel<Product>) => ({
       ...vm,
       selectedItem: item,
     }))
   );
-
-  private closeDetailChange$ = this.detailCloseState.pipe(
+  // notify close detail
+  private selectedClose$ = this.detailCloseState.pipe(
     map((_) => (vm: ViewModel<Product>) => ({ ...vm, selectedItem: null }))
   );
 
-  private searchItemChange$ = this.searchItemState.pipe(
+  // notify search
+  private searchChange$ = this.searchState.pipe(
     tap((o) => console.log("searchItem-change:", o)),
     map((item: Product) => (vm: ViewModel<Product>) => ({
       ...vm,
@@ -128,7 +130,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   // todo: Pagination
 
-  // handle events
+  // handle add notifiction
   handleAdd(item: Product) {
     console.log("Item added:", item);
     this.addState.next(item);
@@ -146,6 +148,6 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   handleSearchItem(searchItem: Product) {
     console.log("products-handleSearchItem:", searchItem);
-    this.searchItemState.next(searchItem);
+    this.searchState.next(searchItem);
   }
 } // class

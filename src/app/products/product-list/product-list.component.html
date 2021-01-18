@@ -1,8 +1,8 @@
 <h3>Product List</h3>
 <ul *ngFor="let item of items">
   <product-list-item
-    (OnDetail)="detail(item)"
-    (OnDelete)="delete(item)"
+    (OnSelected)="detail(item)"
+    (OnDeleted)="delete(item)"
     [item]="item"
   ></product-list-item>
 </ul>

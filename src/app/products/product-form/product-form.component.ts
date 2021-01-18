@@ -8,7 +8,7 @@ import { Product } from "../products.component";
   styleUrls: ["./product-form.component.css"],
 })
 export class ProductFormComponent implements OnInit {
-  @Output() OnItemAdded = new EventEmitter<Product>();
+  @Output() OnAdded = new EventEmitter<Product>();
   itemForm: FormGroup;
 
   constructor(private fb: FormBuilder) {}
@@ -28,7 +28,7 @@ export class ProductFormComponent implements OnInit {
 
   itemAdded() {
     console.log("item-form-userChanged:", this.itemForm.value);
-    this.OnItemAdded.emit(this.itemForm.value);
+    this.OnAdded.emit(this.itemForm.value);
     this.itemForm.reset();
   }
 }

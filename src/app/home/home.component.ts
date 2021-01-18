@@ -1,17 +1,18 @@
-import { Component, OnInit } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { Component } from "@angular/core";
+
 // rxjs
 import { Observable } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
 
 // angular material
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
+
 @Component({
-  selector: "my-app",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
+  selector: "app-home",
+  templateUrl: "./home.component.html",
+  styleUrls: ["./home.component.css"],
 })
-export class AppComponent {
+export class HomeComponent {
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
     .pipe(
@@ -20,4 +21,4 @@ export class AppComponent {
     );
 
   constructor(private breakpointObserver: BreakpointObserver) {}
-} // clsss
+}
