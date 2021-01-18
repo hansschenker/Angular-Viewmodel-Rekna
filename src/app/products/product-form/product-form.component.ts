@@ -20,9 +20,13 @@ export class ProductFormComponent implements OnInit {
   buildForm() {
     this.itemForm = this.fb.group({
       // item field
+      id: ["", Validators.required],
+      // item field
       name: ["", Validators.required],
       // product fields
-      color: ["", Validators.required],
+      color: ["green", Validators.required],
+      // product fields
+      year: ["2000", Validators.required],
     });
   }
 

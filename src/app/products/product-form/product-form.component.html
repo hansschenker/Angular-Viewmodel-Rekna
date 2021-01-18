@@ -3,13 +3,23 @@
     <h3>Add a Product</h3>
     <!-- name field-->
     <div class="field">
+      <label for="id">Id:</label>
+      <input tabindex="0" type="number" formControlName="id" id="id" />
+    </div>
+    <!-- name field-->
+    <div class="field">
       <label for="name">Name:</label>
       <input tabindex="0" type="text" formControlName="name" id="name" />
     </div>
     <!-- color field -->
     <div class="field">
       <label for="color">Color:</label>
-      <input tabindex="1" type="text" formControlName="color" id="color" />
+      <input tabindex="1" type="text" formControlName="color" id="color" value="green" />
+    </div>
+    <!-- color field -->
+    <div class="field">
+      <label for="year">Color:</label>
+      <input tabindex="2" type="number" formControlName="year" id="year" value="2000" />
     </div>
 
     <button type="submit">Save Product</button>
