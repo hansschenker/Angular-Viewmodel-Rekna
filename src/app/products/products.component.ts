@@ -11,7 +11,6 @@ import { Observable, Subject, merge, combineLatest } from "rxjs";
 import { scan, tap, map, combineAll } from "rxjs/operators";
 // shared
 import { ViewModel, Item } from "../shared/viewmodel";
-import { PaginationComponent } from "../shared/pagination/pagination.component";
 
 export interface Product extends Item {
   year: number;
@@ -28,14 +27,16 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   @ViewChild("searchValue") searchValue: ElementRef;
   // user viewmodel to which user subscrbes via async
   public vm$: Observable<ViewModel<Product>>;
+  //pagination: Pagination = { pageSize: 5, pageCount: 5, pageItems: [] };
+  //pageSize = 2; // pagination
 
   // record all user actions
-  public addState = new Subject<Product>();
-  public deleteState = new Subject<Product>();
-  public detailState = new Subject<Product>();
+  public addState = new Subject<Partial<ViewModel<Product>>>();
+  public deleteState = new Subject<Partial<ViewModel<Product>>>();
+  public detailState = new Subject<Partial<ViewModel<Product>>>();
   public detailCloseState = new Subject();
-  public searchState = new Subject<Product>();
-  // todo pagination
+  public searchState = new Subject<Partial<ViewModel<Product>>>();
+  public paginationState = new Subject<Partial<ViewModel<Product>>>();
 
   ngOnInit() {}
   ngAfterViewInit() {
@@ -46,13 +47,13 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   constructor(private http: HttpClient) {
     // merge all state changes into viewmodel
     this.vm$ = merge(
-      this.dataChange$,
+      this.itemsChange$,
       this.addChange$,
       this.deleteChange$,
       this.selectedChange$,
       this.selectedClose$,
-      this.searchChange$
-      // todo: Pagination
+      this.searchChange$,
+      this.paginationChange$
     ).pipe(
       scan(
         (
@@ -65,8 +66,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   } // constructor
 
   // load data
-  private dataChange$ = this.http.get<Product[]>(`api/products`).pipe(
-    // tap((ps) => console.log("products:", ps)),
+  private itemsChange$ = this.http.get<Product[]>(`api/products`).pipe(
     map((products: Product[]) => (vm: ViewModel<Product>) => ({
       ...vm,
       items: products,
@@ -75,23 +75,30 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   // notify add
   private addChange$ = this.addState.pipe(
     tap((u) => console.log("add item:", u)),
-    map((item: Product) => (vm: ViewModel<Product>) => ({
+    map((vm: ViewModel<Product>) => (vm: ViewModel<Product>) => ({
       ...vm,
-      items: [...vm.items, { ...item }],
+      items: [...vm.items, { ...vm.item }],
+    }))
+  );
+  // notify pagination change
+  private paginationChange$ = this.paginationState.pipe(
+    map((product) => (vm: ViewModel<Product>) => ({
+      ...vm,
+      pageItems: { pargeItems: vm.items },
     }))
   );
   // notify delete
   private deleteChange$ = this.deleteState.pipe(
-    map((item: Product) => (vm: ViewModel<Product>) => ({
+    map((vm: ViewModel<Product>) => (vm: ViewModel<Product>) => ({
       ...vm,
-      items: vm.items.filter((p) => p !== item),
+      items: vm.items.filter((p) => p !== vm.item),
     }))
   );
   // notify show detail
   private selectedChange$ = this.detailState.pipe(
-    map((item: Product) => (vm: ViewModel<Product>) => ({
+    map((vm: ViewModel<Product>) => (vm: ViewModel<Product>) => ({
       ...vm,
-      selectedItem: item,
+      selectedItem: vm.selectedItem,
     }))
   );
   // notify close detail
@@ -102,27 +109,27 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   // notify search
   private searchChange$ = this.searchState.pipe(
     tap((o) => console.log("searchItem-change:", o)),
-    map((item: Product) => (vm: ViewModel<Product>) => ({
+    map((vm: ViewModel<Product>) => (vm: ViewModel<Product>) => ({
       ...vm,
-      searchItem: item,
+      searchItem: vm.searchItem,
       searchItems: vm.items.filter((itm) => {
-        if (item.name.length > 0) {
+        if (vm.searchItem.name.length > 0) {
           console.log("search name");
-          item.color = "";
-          item.year = 0;
-          return itm.name === item.name;
+          vm.searchItem.color = "";
+          vm.searchItem.year = 0;
+          return itm.name === vm.searchItem.name;
         }
-        if (item.year > 0) {
+        if (vm.searchItem.year > 0) {
           console.log("search year");
-          item.color = "";
-          item.name = "";
-          return itm.year.toString() === item.year.toString();
+          vm.searchItem.color = "";
+          vm.searchItem.name = "";
+          return itm.year.toString() === vm.searchItem.year.toString();
         }
-        if (item.color.length > 0) {
+        if (vm.searchItem.color.length > 0) {
           console.log("search color");
-          item.year = 0;
-          item.name = "";
-          return itm.color === item.color;
+          vm.searchItem.year = 0;
+          vm.searchItem.name = "";
+          return itm.color === vm.searchItem.color;
         }
       }),
     }))
@@ -133,14 +140,14 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   // handle add notifiction
   handleAdd(item: Product) {
     console.log("Item added:", item);
-    this.addState.next(item);
+    this.addState.next({ item });
   }
   handleDelete(item: Product) {
-    this.deleteState.next(item);
+    this.deleteState.next({ item });
   }
   handleDetail(item: Product) {
     console.log("product-component-detail:", item);
-    this.detailState.next(item);
+    this.detailState.next({ item });
   }
   handleDetailClose(item: Product) {
     this.detailCloseState.next(item);
@@ -148,6 +155,10 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   handleSearchItem(searchItem: Product) {
     console.log("products-handleSearchItem:", searchItem);
-    this.searchState.next(searchItem);
+    this.searchState.next({ searchItem });
+  }
+  handlePageItemsChange(pageItems: Product[]) {
+    this.paginationState.next({ pageItems });
+    console.log("PageItems:", pageItems);
   }
 } // class

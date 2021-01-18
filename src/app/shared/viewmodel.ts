@@ -1,16 +1,24 @@
+import { Observable } from "rxjs";
 export interface Item {
   id?: number;
   name: string;
 }
 
+export interface Pagination {
+  pageCount: number;
+  pageSize: number;
+  pageItems: Observable<Item[]>;
+}
 // export interface SearchItem<T> {
 //   fieldAndValue: [keyof T, string];
 // }
 export interface ViewModel<T> {
+  item: T;
   items: T[];
   searchItem?: T;
   searchItems?: T[];
   selectedItem?: T;
+  pageItems: T[];
 }
 
 export type ItemProps<T> = { [key in keyof T]: T[key] };
