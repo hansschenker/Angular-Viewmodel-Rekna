@@ -12,7 +12,6 @@ import { scan, tap, map, combineAll } from "rxjs/operators";
 // shared
 
 import { ViewModel, Item, VmFn } from "../shared/viewmodel";
-import { PaginationComponent } from "../shared/pagination/pagination.component";
 import { ProductService } from "./product.service";
 
 export interface Product extends Item {

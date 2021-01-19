@@ -9,7 +9,6 @@ import { concatMap } from "rxjs/operators";
   styleUrls: ["./pagination.component.css"],
 })
 export class PaginationComponent implements OnInit {
-<<<<<<< HEAD
   @Input()
   private _pageCount: number = 20;
   public get pageCount(): number {
@@ -42,11 +41,6 @@ export class PaginationComponent implements OnInit {
   @Output() pageItemsChanged = new EventEmitter<Item[]>();
   // pageItems of current pageSet with pageSize
   //public pageitems: Item[];
-=======
-  @Input() pageCount: number = 20;
-  @Input() pageSize: number = 10;
-  @Input() items: Item[];
->>>>>>> 48b91ac44ed14b3598a44b91f0ce837bcd81f037
 
   pageSet: number = 1;
   // calculate Page sets
