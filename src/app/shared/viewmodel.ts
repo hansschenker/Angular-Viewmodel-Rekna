@@ -21,7 +21,6 @@ export interface ViewModel<T> {
   pageItems: T[];
 }
 
-<<<<<<< HEAD
 export type ItemProps<T> = { [key in keyof T]: T[key] };
 export const propof = <T>(name: keyof T) => name;
 
@@ -63,4 +62,3 @@ export type VmFn<T> = (vm: ViewModel<T>) => ViewModel<T>;
 export type TypeProps<T> = { [key in keyof T]: T[key] };
 export const propof = <T>(name: keyof T) => name;
 
->>>>>>> 48b91ac44ed14b3598a44b91f0ce837bcd81f037
