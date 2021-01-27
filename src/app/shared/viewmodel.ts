@@ -36,7 +36,9 @@ export interface ViewModel<T> {
   selectedItem?: T;
   pageItems: T[];
 }
-
+export interface UpdateViewModel<T> {
+  data: Partial<ViewModel<T>>;
+}
 export type VmFn<T> = (vm: ViewModel<T>) => ViewModel<T>;
 
 // export const propof = <T>(name: keyof T) => name;
