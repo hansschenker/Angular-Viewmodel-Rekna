@@ -29,7 +29,7 @@ export class ReactiveComponent implements OnInit, OnDestroy {
     const sink = {} as T;
 
     const sourceKeys = Object.keys(sources) as (keyof T)[];
-
+    console.log("sourceKeys:", sourceKeys);
     // updaate sink from sources
     const updateSink$ = from(sourceKeys).pipe(
       mergeMap(sourceKey => {
