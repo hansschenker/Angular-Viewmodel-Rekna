@@ -1,8 +1,9 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
-import { Product } from './products.component';
+
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Product } from "./products.component";
+import { throwError, Observable } from "rxjs";
+import { catchError, map, tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -10,24 +11,28 @@ import { Product } from './products.component';
 export class ProductService {
 
   constructor(private http: HttpClient) {}
-  
+
   products$: Observable<Product[]> = this.http
     .get<Product[]>("/api/products")
     .pipe(catchError((err) => throwError(err)));
 
+  product$(id: number): Observable<Product> {
+    return this.http.get<Product>(`/api/products/${id}`);
+  }
+
   addProduct(product: Product): Observable<Product> {
-    console.log("service add product:", product)
+    console.log("service add product:", product);
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-       // Authorization: 'my-auth-token'
-      })
+        "Content-Type": "application/json",
+        // Authorization: 'my-auth-token'
+      }),
     };
 
     return this.http.post<Product>("/api/products", product, httpOptions).pipe(
-      tap (p => console.log("Product Added", p, httpOptions)),
-      catchError( err => throwError(err))
-    )       //.subscribe ( d => console.log("data saved", d))
+      tap((p) => console.log("Product Added", p, httpOptions)),
+      catchError((err) => throwError(err))
+    ); //.subscribe ( d => console.log("data saved", d))
   } // addProduct
 
-}
+} //  class

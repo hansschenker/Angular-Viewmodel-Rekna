@@ -10,9 +10,9 @@ import { HttpClient } from "@angular/common/http";
 import { Observable, Subject, merge, combineLatest } from "rxjs";
 import { scan, tap, map, combineAll } from "rxjs/operators";
 // shared
-import { ViewModel, Item, VmFn } from '../shared/viewmodel';
-import { PaginationComponent } from "../shared/pagination/pagination.component";
-import { ProductService } from './product.service';
+
+import { ViewModel, Item, VmFn } from "../shared/viewmodel";
+import { ProductService } from "./product.service";
 
 export interface Product extends Item {
   year: number;
@@ -25,111 +25,113 @@ export interface Product extends Item {
   styleUrls: ["./products.component.css"],
 })
 export class ProductsComponent implements OnInit, AfterViewInit {
-
   // get searchField and searchValue
   @ViewChild("searchValue") searchValue: ElementRef;
 
   // viewmodel holds state changes
   public vm$: Observable<ViewModel<Product>>;
+  //pagination: Pagination = { pageSize: 5, pageCount: 5, pageItems: [] };
+  //pageSize = 2; // pagination
 
-  // handle state input
-  public addState = new Subject<Product>();
-  public deleteState = new Subject<Product>();
-  public detailState = new Subject<Product>();
+  // record all user actions
+  public addState = new Subject<Partial<ViewModel<Product>>>();
+  public deleteState = new Subject<Partial<ViewModel<Product>>>();
+  public detailState = new Subject<Partial<ViewModel<Product>>>();
+
   public detailCloseState = new Subject();
-  public searchItemState = new Subject<Product>();
-  // todo pagination
+  public searchState = new Subject<Partial<ViewModel<Product>>>();
+  public paginationState = new Subject<Partial<ViewModel<Product>>>();
 
   ngOnInit() {}
   ngAfterViewInit() {
     console.log("searchValue:", this.searchValue);
   }
 
-
   constructor(private http: HttpClient, private svc: ProductService) {
-
-    type vmFn = VmFn<Product> 
+    type vmFn = VmFn<Product>;
 
     // merge all state changes into viewmodel
     this.vm$ = merge(
-      this.dataChange$,
+      this.itemsChange$,
       this.addChange$,
       this.deleteChange$,
-      this.detailChange$,
-      this.closeDetailChange$,
-      this.searchItemChange$
-      // todo: Pagination
+      this.selectedChange$,
+      this.selectedClose$,
+      this.searchChange$,
+      this.paginationChange$
     ).pipe(
-      scan(
-        ( oldVm: ViewModel<Product>, reduceVm: vmFn) => reduceVm(oldVm),
-        { items: [] } as ViewModel<Product>
-      )
+      scan((oldVm: ViewModel<Product>, reduceVm: vmFn) => reduceVm(oldVm), {
+        items: [],
+      } as ViewModel<Product>)
     );
   } // constructor
 
-  // dataChange when products loaded
-  // http.get<Product[]>(`api/products`)
-  private dataChange$ = this.svc.products$.pipe(
-    // tap((ps) => console.log("products:", ps)),
+  // load data
+  private itemsChange$ = this.http.get<Product[]>(`api/products`).pipe(
     map((products: Product[]) => (vm: ViewModel<Product>) => ({
       ...vm,
       items: products,
     }))
   );
-
-  // add item
+  // notify add
   private addChange$ = this.addState.pipe(
-    tap((u) => console.log("add item:", u)), 
-    tap(p => this.svc.addProduct(p).subscribe(d => console.log("json-server saved:", d))),
-    map((item: Product) => (vm: ViewModel<Product>) => ({
+    tap((u) => console.log("add item:", u)),
+    map((vm: ViewModel<Product>) => (vm: ViewModel<Product>) => ({
       ...vm,
-      items: [...vm.items, { ...item }],
-    })),
-  );
-  // delete item
-  private deleteChange$ = this.deleteState.pipe(
-    map((item: Product) => (vm: ViewModel<Product>) => ({
-      ...vm,
-      items: vm.items.filter((p) => p !== item),
+      items: [...vm.items, { ...vm.item }],
     }))
   );
-  // show item details
-  private detailChange$ = this.detailState.pipe(
-    map((item: Product) => (vm: ViewModel<Product>) => ({
+  // notify pagination change
+  private paginationChange$ = this.paginationState.pipe(
+    map((product) => (vm: ViewModel<Product>) => ({
       ...vm,
-      selectedItem: item,
+      pageItems: { pargeItems: vm.items },
     }))
   );
+  // notify delete
 
-  // close item details
-  private closeDetailChange$ = this.detailCloseState.pipe(
+  private deleteChange$ = this.deleteState.pipe(
+    map((vm: ViewModel<Product>) => (vm: ViewModel<Product>) => ({
+      ...vm,
+      items: vm.items.filter((p) => p !== vm.item),
+    }))
+  );
+  // notify show detail
+  private selectedChange$ = this.detailState.pipe(
+    map((vm: ViewModel<Product>) => (vm: ViewModel<Product>) => ({
+      ...vm,
+      selectedItem: vm.selectedItem,
+    }))
+  );
+  // notify close detail
+  private selectedClose$ = this.detailCloseState.pipe(
     map((_) => (vm: ViewModel<Product>) => ({ ...vm, selectedItem: null }))
   );
 
-  // search item by name, color, year
-  private searchItemChange$ = this.searchItemState.pipe(
+  // notify search
+  private searchChange$ = this.searchState.pipe(
     tap((o) => console.log("searchItem-change:", o)),
-    map((item: Product) => (vm: ViewModel<Product>) => ({
+    map((vm: ViewModel<Product>) => (vm: ViewModel<Product>) => ({
       ...vm,
-      searchItem: item,
+      searchItem: vm.searchItem,
       searchItems: vm.items.filter((itm) => {
-        if (item.name.length > 0) {
+        if (vm.searchItem.name.length > 0) {
           console.log("search name");
-          item.color = "";
-          item.year = 0;
-          return itm.name === item.name;
+          vm.searchItem.color = "";
+          vm.searchItem.year = 0;
+          return itm.name === vm.searchItem.name;
         }
-        if (item.year > 0) {
+        if (vm.searchItem.year > 0) {
           console.log("search year");
-          item.color = "";
-          item.name = "";
-          return itm.year.toString() === item.year.toString();
+          vm.searchItem.color = "";
+          vm.searchItem.name = "";
+          return itm.year.toString() === vm.searchItem.year.toString();
         }
-        if (item.color.length > 0) {
+        if (vm.searchItem.color.length > 0) {
           console.log("search color");
-          item.year = 0;
-          item.name = "";
-          return itm.color === item.color;
+          vm.searchItem.year = 0;
+          vm.searchItem.name = "";
+          return itm.color === vm.searchItem.color;
         }
       }),
     }))
@@ -137,18 +139,16 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   // todo: Pagination
   // ---------------------------------------------------------------------------------
-
-  // handle user events -> next state
   handleAdd(item: Product) {
     console.log("Item added:", item);
-    this.addState.next(item);
+    this.addState.next({ item });
   }
   handleDelete(item: Product) {
-    this.deleteState.next(item);
+    this.deleteState.next({ item });
   }
   handleDetail(item: Product) {
     console.log("product-component-detail:", item);
-    this.detailState.next(item);
+    this.detailState.next({ item });
   }
   handleDetailClose(item: Product) {
     this.detailCloseState.next(item);
@@ -156,6 +156,10 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   handleSearchItem(searchItem: Product) {
     console.log("products-handleSearchItem:", searchItem);
-    this.searchItemState.next(searchItem);
+    this.searchState.next({ searchItem });
+  }
+  handlePageItemsChange(pageItems: Product[]) {
+    this.paginationState.next({ pageItems });
+    console.log("PageItems:", pageItems);
   }
 } // class

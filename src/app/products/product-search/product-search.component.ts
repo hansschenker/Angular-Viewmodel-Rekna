@@ -13,8 +13,7 @@ import { Product } from "../products.component";
   styleUrls: ["./product-search.component.css"],
 })
 export class ProductSearchComponent implements OnInit, AfterViewInit {
-  @Output() OnSearchItemChanged = new EventEmitter<Partial<Product>>();
-  @Output() OnSearchItemsChanged = new EventEmitter<Partial<Product>>();
+  @Output() OnItemSearch = new EventEmitter<Partial<Product>>();
   item: Product;
   fields: string[];
 
@@ -65,7 +64,7 @@ export class ProductSearchComponent implements OnInit, AfterViewInit {
     this.searchItem[this.fieldName] = this.fieldValue;
 
     console.log("handleSearchItem", this.searchItem);
-    this.OnSearchItemChanged.emit(this.searchItem);
+    this.OnItemSearch.emit(this.searchItem);
     this.searchItem.name = "";
     this.searchItem.color = "";
     this.searchItem.year = 0;

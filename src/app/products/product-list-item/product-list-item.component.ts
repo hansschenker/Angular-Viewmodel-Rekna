@@ -8,16 +8,16 @@ import { Product } from "../products.component";
 })
 export class ProductListItemComponent implements OnInit {
   @Input() item: Product;
-  @Output() OnDelete = new EventEmitter<Product>();
-  @Output() OnDetail = new EventEmitter<Product>();
+  @Output() OnDeleted = new EventEmitter<Product>();
+  @Output() OnSelected = new EventEmitter<Product>();
   constructor() {}
 
   ngOnInit(): void {}
 
   delete(item: Product) {
-    this.OnDelete.emit(item);
+    this.OnDeleted.emit(item);
   }
   detail(item: Product) {
-    this.OnDetail.emit(item);
+    this.OnSelected.emit(item);
   }
 } // class

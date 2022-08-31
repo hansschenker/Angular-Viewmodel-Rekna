@@ -5,24 +5,25 @@
 
 
   <product-search
-    (OnSearchItemChanged)="handleSearchItem($event)"
+    (OnItemSearch)="handleSearchItem($event)"
   ></product-search>
 
   <h3>Products</h3>
   <!-- form -->
-  <product-form (OnItemAdded)="handleAdd($event)"></product-form>
-  <!-- <pre>  {{ products | json }} </pre> -->
+  <product-form (OnAdded)="handleAdd($event)"></product-form>
 
   <h3>Pagination</h3>
   <hs-pagination
-    [items]="vm.items"
-    [pageCount]="vm.items.length"
-    [pageSize]="10"
-  ></hs-pagination>
-  <!-- list -->
-  <product-list
-    (OnDetail)="handleDetail($event)"
-    (OnDelete)="handleDelete($event)"
+    (pageItemsChanged)="handlePageItemsChange($event)"
+    [_pageItems]="vm.items"
+    [_pageCount]="vm.items.length"
+    [_pageSize]="5">
+  </hs-pagination> 
+
+  <!-- list // pageination.pageitems -->
+  <product-list 
+    (OnSelected)="handleDetail($event)"
+    (OnDeleted)="handleDelete($event)"
     [items]="vm.items"
   ></product-list>
 
@@ -33,3 +34,5 @@
     [item]="vm.selectedItem"
   ></product-detail>
 </div>
+
+<router-outlet></router-outlet>

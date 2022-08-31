@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { PaginationModule } from "../shared/pagination/pagination.module";
 
 // products feature
+import { ProductsRoutingModule } from "./products-routing.module";
 import { ProductsComponent } from "./products.component";
 import { ProductSearchComponent } from "./product-search/product-search.component";
 import { ProductFormComponent } from "./product-form/product-form.component";
@@ -24,6 +25,7 @@ import { ProductListItemComponent } from "./product-list-item/product-list-item.
   ],
   imports: [
     CommonModule,
+    ProductsRoutingModule,
     PaginationModule,
     HttpClientModule,
     ReactiveFormsModule,
